@@ -12,6 +12,7 @@ const categorySchema = new mongoose.Schema<ICategory>({
     name:{
         type:String,
         required:true,
+        unique:true
     },
     description:{
         type:String,
@@ -20,6 +21,6 @@ const categorySchema = new mongoose.Schema<ICategory>({
 },{timestamps:true})
 
 
-const Category = mongoose.models.categories || mongoose.model<ICategory>("Category",categorySchema)
+const Category = mongoose.models.Category || mongoose.model<ICategory>("Category",categorySchema)
 
 export default Category

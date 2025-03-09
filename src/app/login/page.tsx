@@ -5,8 +5,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useNotification } from "../components/Notification";
 import Link from "next/link";
+import Input from "../components/ui/Input";
+import { useSession } from "next-auth/react"
 
 export default function Login() {
+  const { data: session, status } = useSession()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,15 +25,48 @@ export default function Login() {
       redirect: false,
     });
 
+
     if (result?.error) {
       showNotification(result.error, "error");
       setLoading(false);
     } else {
       showNotification("Login successful!", "success");
-      router.push("/");
+      status === "authenticated" ? router.push("/admin") : router.push("/");
       setLoading(false);
     }
   };
+
+  // Email icon SVG
+  const emailIcon = (
+    <svg
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+      />
+    </svg>
+  );
+
+  // Password icon SVG
+  const passwordIcon = (
+    <svg
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+      />
+    </svg>
+  );
 
   return (
     <main className="overflow-hidden max-h-screen dark:bg-gray-900">
@@ -46,71 +82,27 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Email Address
-              </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:text-gray-200 text-gray-900 bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-300"
-                  placeholder="Enter your email"
-                />
-                <svg
-                  className="absolute right-3 top-3.5 h-5 w-5 text-gray-400 dark:text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-            </div>
+            <Input
+              label="Email Address"
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={setEmail}
+              required
+              icon={emailIcon}
+            />
 
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-300"
-                  placeholder="••••••••"
-                />
-                <svg
-                  className="absolute right-3 top-3.5 h-5 w-5 text-gray-400 dark:text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-              </div>
-            </div>
+            <Input
+              label="Password"
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={setPassword}
+              required
+              icon={passwordIcon}
+            />
 
             <button
               type="submit"

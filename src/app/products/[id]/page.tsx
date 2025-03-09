@@ -92,8 +92,8 @@ export default function ProductPage() {
       <div className="container mx-auto p-4 min-h-screen mt-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Product Images */}
-          <div className="flex flex-col gap-4">
-            <div className="border rounded-lg overflow-hidden h-[400px] relative">
+          <div className="flex flex-col gap-4 ">
+            <div className="border:none rounded-lg overflow-hidden h-[400px] relative">
               {product.image ? (
                 <div className="relative w-full h-full overflow-hidden">
                 {/* Blurred Background */}
@@ -124,7 +124,7 @@ export default function ProductPage() {
             {/* Thumbnails - if you have multiple images */}
             <div className="grid grid-cols-4 gap-2">
               {[product.image, "/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100", "/placeholder.svg?height=100&width=100"].map((src, index) => (
-                <div key={index} className="border rounded-lg overflow-hidden h-24 relative cursor-pointer hover:border-blue-500">
+                <div key={index} className=" rounded-lg overflow-hidden h-24 relative cursor-pointer hover:border-blue-500">
                   <Image
                     src={src || "/placeholder.svg?height=100&width=100"}
                     alt={`Thumbnail ${index + 1}`}

@@ -19,10 +19,26 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized Request" }, { status: 401 })
         }
 
-        const { product, quantity = 1 } = await request.json()
+        const { product, quantity = 1, shippingAddress } = await request.json()
 
         if (!product) {
             return NextResponse.json({ error: "Invalid Request" }, { status: 400 })
+        }
+
+        if (
+            !product?._id ||
+            typeof product.amount !== "number" ||
+            !shippingAddress ||
+            !shippingAddress.address ||
+            !shippingAddress.city ||
+            !shippingAddress.state ||
+            !shippingAddress.pincode ||
+            !shippingAddress.phone
+        ) {
+            return NextResponse.json(
+                { error: "Invalid order parameters" },
+                { status: 400 }
+            );
         }
 
         await connectDB()
@@ -46,10 +62,11 @@ export async function POST(request: NextRequest) {
             status: "processing",
             razorpayOrderId: order.id,
             shippingAddress: {
-                address: "Test Address",
-                city: "Test City",
-                state: "Test State",
-                pincode: "123456"
+                address: shippingAddress.address,
+                city: shippingAddress.city,
+                state: shippingAddress.state,
+                pincode:shippingAddress.pincode,
+                phone: shippingAddress.phone
             },
             paymenyStatus: "pending"
         })

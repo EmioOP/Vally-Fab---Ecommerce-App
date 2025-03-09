@@ -6,6 +6,7 @@ import FileUpload from "@/app/components/FileUpload";
 import { IKUploadResponse } from "imagekitio-next/dist/types/components/IKUpload/props";
 import { IProduct } from "@/model/productModel";
 
+
 export default function EditProductForm() {
   const { id } = useParams();
   const router = useRouter();
@@ -83,7 +84,7 @@ export default function EditProductForm() {
 
       setSuccess("Product updated successfully!");
       setUpdating(false)
-      router.refresh();
+      router.push("/admin/products");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update product");
       setUpdating(false)

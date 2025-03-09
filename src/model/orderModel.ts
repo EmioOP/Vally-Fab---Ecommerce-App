@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 
 export interface IOrder {
-    user: mongoose.Types.ObjectId;
+    customer: mongoose.Types.ObjectId;
     products: 
         {
             product: mongoose.Types.ObjectId;
@@ -19,7 +19,8 @@ export interface IOrder {
         address: string;
         city: string;
         state: string;
-        pincode: string
+        pincode: string;
+        phone:string
     };
     paymentStatus: "pending" | "completed" | "failed";
     createdAt:Date;
@@ -29,7 +30,7 @@ export interface IOrder {
 
 
 const orderSchema = new mongoose.Schema<IOrder>({
-    user: {
+    customer: {
         type: mongoose.Schema.Types.ObjectId,
         ref:"User",
         required: true
@@ -64,6 +65,7 @@ const orderSchema = new mongoose.Schema<IOrder>({
         city: { type: String, required: true },
         state: { type: String, required: true },
         pincode: { type: String, required: true },
+        phone: {type:String,required:true}
     },
     paymentStatus:{
         type:String,
