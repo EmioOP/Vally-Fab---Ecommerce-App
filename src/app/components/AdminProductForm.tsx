@@ -6,8 +6,8 @@ import { IKUploadResponse } from "imagekitio-next/dist/types/components/IKUpload
 import { Loader2 } from "lucide-react";
 import { useNotification } from "./Notification";
 import { apiClient, ProductFormData } from "@/lib/api-client";
-import {  useState } from "react";
-
+import { useState, useEffect } from "react";
+import { ICategory } from "@/model/categoryModel";
 
 function FormInput({
   label,
@@ -35,10 +35,11 @@ function FormInput({
   );
 }
 
-
 export default function AdminProductForm() {
   const { showNotification } = useNotification();
-  const [selectedSize, setSelectedSize] = useState<string>("M")
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [selectedSize, setSelectedSize] = useState<string>("M");
   const {
     register,
     handleSubmit,
@@ -59,19 +60,22 @@ export default function AdminProductForm() {
     },
   });
 
-  // Fetch categories on mount
-  // useEffect(() => {
-  //   const fetchCategories = async () => {
-  //     try {
-  //       const response = await fetch("/api/categories");
-  //       const data = await response.json();
-  //       setCategories(data);
-  //     } catch (error) {
-  //       showNotification("Failed to load categories", "error");
-  //     }
-  //   };
-  //   fetchCategories();
-  // }, [showNotification]);
+  //Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setCategories(data.categories);
+        setLoadingCategories(false)
+      } catch (error) {
+        showNotification("Failed to load categories", "error");
+      }
+    };
+    fetchCategories();
+  }, []);
+
+
 
   const handleUploadSuccess = (response: IKUploadResponse) => {
     setValue("image", response.filePath);
@@ -82,7 +86,6 @@ export default function AdminProductForm() {
     setSelectedSize(size);
     setValue("sizes", size); // Ensure sizes is a string
   };
-  
 
   const onSubmit = async (data: ProductFormData) => {
     try {
@@ -145,15 +148,25 @@ export default function AdminProductForm() {
             error={errors.category?.message}
             id="category"
           >
-            <input
+            <select
               id="category"
-              type="text"
-              className={`input input-bordered w-full text-black ${
-                errors.category ? "input-error" : ""
+              className={`select select-bordered w-full text-black ${
+                errors.category ? "select-error" : ""
               }`}
-              placeholder="Enter category"
+              disabled={loadingCategories}
               {...register("category", { required: "Category is required" })}
-            />
+            >
+              <option value="">Select a category</option>
+              {loadingCategories ? (
+                <option disabled>Loading categories...</option>
+              ) : (
+                categories.map((category:any) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))
+              )}
+            </select>
           </FormInput>
 
           <FormInput label="Brand" error={errors.brand?.message} id="brand">
@@ -185,23 +198,30 @@ export default function AdminProductForm() {
             />
           </FormInput>
 
-          <FormInput label="Available Sizes" error={errors.sizes?.message} id="sizes">
-  <div className="flex flex-wrap gap-4">
-    {["S", "M", "L", "XL", "XXL"].map((size) => (
-      <label key={size} className="flex items-center gap-2 cursor-pointer">
-        <input
-          type="radio"
-          name="sizes"
-          value={size}
-          checked={selectedSize === size}
-          onChange={() => handleSizeChange(size)}
-          className="radio radio-primary"
-        />
-        <span className="font-medium">{size}</span>
-      </label>
-    ))}
-  </div>
-</FormInput>
+          <FormInput
+            label="Available Sizes"
+            error={errors.sizes?.message}
+            id="sizes"
+          >
+            <div className="flex flex-wrap gap-4">
+              {["S", "M", "L", "XL", "XXL"].map((size) => (
+                <label
+                  key={size}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name="sizes"
+                    value={size}
+                    checked={selectedSize === size}
+                    onChange={() => handleSizeChange(size)}
+                    className="radio radio-primary"
+                  />
+                  <span className="font-medium">{size}</span>
+                </label>
+              ))}
+            </div>
+          </FormInput>
         </div>
 
         <FormInput
@@ -227,7 +247,7 @@ export default function AdminProductForm() {
           id="image"
         >
           <div className="space-y-4">
-          <FileUpload onSuccess={handleUploadSuccess} />
+            <FileUpload onSuccess={handleUploadSuccess} />
             {watch("image") && (
               <div className="mt-4">
                 <p className="text-sm text-success mb-2">Image uploaded!</p>

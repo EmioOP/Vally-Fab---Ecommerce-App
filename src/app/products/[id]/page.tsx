@@ -64,7 +64,9 @@ export default function ProductPage() {
           <Navbar />
         </header>
         <div className="container mx-auto p-4 min-h-screen flex items-center justify-center mt-16">
-          <div className="animate-pulse text-xl">Loading product...</div>
+          <div className="animate-pulse text-xl">
+          <span className="loading loading-dots loading-lg"></span>
+            </div>
         </div>
       </>
     );

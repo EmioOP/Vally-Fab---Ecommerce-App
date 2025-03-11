@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
 
 
-interface ICategory {
-    name:string,
-    description:string,
-    createdAt:Date,
-    updatedAt:Date
+export interface ICategory {
+    name:string;
+    description:string;
+    _id:mongoose.Types.ObjectId;
+    createdAt:Date;
+    updatedAt:Date;
 }
 
 const categorySchema = new mongoose.Schema<ICategory>({

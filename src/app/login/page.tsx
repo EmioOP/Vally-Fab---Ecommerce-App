@@ -31,7 +31,7 @@ export default function Login() {
       setLoading(false);
     } else {
       showNotification("Login successful!", "success");
-      status === "authenticated" ? router.push("/admin") : router.push("/");
+      session?.user?.role === "admin" ? router.push("/admin") : router.push("/");
       setLoading(false);
     }
   };

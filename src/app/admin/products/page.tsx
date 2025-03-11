@@ -24,7 +24,12 @@ export default function ProductsAdminPage() {
 
   return (
     <div className="container mx-auto p-4 min-h-screen max-h-full mt-6">
-      <h1 className="text-xl font-bold mb-4 text-left ml-2">All Products</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-bold mb-4 text-left ml-2">All Products</h1>
+        <Link href="/admin/add-product" className="btn btn-primary">
+          Create New
+        </Link>
+      </div>
       <ul className="flex flex-wrap gap-4">
         {products?.map((product) => (
           <li
@@ -65,8 +70,11 @@ export default function ProductsAdminPage() {
 
                   {/* Buttons */}
                   <div className="flex gap-2 mt-4">
-                    <Link href={`/admin/update-product/${product._id}`} className="btn btn-soft btn-secondary">
-                        Update
+                    <Link
+                      href={`/admin/update-product/${product._id}`}
+                      className="btn btn-soft btn-secondary"
+                    >
+                      Update
                     </Link>
 
                     <button

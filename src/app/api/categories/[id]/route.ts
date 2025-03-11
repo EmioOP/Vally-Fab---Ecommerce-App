@@ -17,7 +17,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
         const { name, description } = await request.json()
 
-        if (isValidObjectId(id)) {
+
+
+        if (!isValidObjectId(id)) {
             return NextResponse.json({ error: "invalid category id" }, { status: 400 })
         }
 
@@ -50,8 +52,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
         const { id } = await params
 
-
-        if (isValidObjectId(id)) {
+        
+        if (!isValidObjectId(id)) {
             return NextResponse.json({ error: "invalid category id" }, { status: 400 })
         }
 
@@ -59,6 +61,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
         // insted of this we can implement soft delete...search about it online
         const deletedCategory = await Category.findByIdAndDelete(id)
+
 
         return NextResponse.json({ message: "Category deleted successfully" }, { status: 200 })
 
@@ -78,27 +81,22 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         const { id } = await params
 
 
-        if (isValidObjectId(id)) {
-            return NextResponse.json({ error: "invalid category id" }, { status: 400 })
+        if (!isValidObjectId(id)) {
+            return NextResponse.json({ error: "invalid category id" }, { status: 409 })
         }
 
         await connectDB()
 
-        const category = await Category.findById(id)
+        const category = await Category.findById(id).lean()
+
+        
 
         if (!category) {
             return NextResponse.json({ error: "category not found" }, { status: 404 })
 
         }
 
-        const products = await Product.find({category:category})
-
-        if(!products || products.length ===0){
-            return NextResponse.json({ error: "products not found" }, { status: 400 })
-            
-        }
-
-        return NextResponse.json({message:"fetched cetegory and related products",products},{status:200})
+        return NextResponse.json(category,{status:200})
 
 
     } catch (error) {

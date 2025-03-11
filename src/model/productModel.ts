@@ -3,10 +3,10 @@ import mongoose from 'mongoose'
 
 export interface IProduct {
     name: string;
-    _id?:mongoose.Schema.Types.ObjectId;
+    _id?:mongoose.Types.ObjectId;
     description: string;
     price: number;
-    category: string;
+    category: mongoose.Types.ObjectId;
     brand: string;
     sizes: "S" | "M" | "L" | "XL" | "XXL";
     image: string;
@@ -29,9 +29,8 @@ const productSchema = new mongoose.Schema<IProduct>({
         required: true,
     },
     category: {
-        // type: mongoose.Schema.Types.ObjectId,
-        // ref: "Category",
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
         required: true
     },
     brand: {
