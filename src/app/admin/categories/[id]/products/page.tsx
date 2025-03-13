@@ -27,7 +27,6 @@ export default function CategoryProductsPage() {
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role === "admin") {
       fetchProducts();
-      fetchCategoryName();
     }
   }, [status, id]);
 
@@ -36,8 +35,8 @@ export default function CategoryProductsPage() {
       const response = await fetch(`/api/categories/${id}/products`);
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
-
-      setProducts(data.products || []); 
+      setProducts(data.products); 
+      setCategoryName(data.category.name);
 
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load products");
@@ -46,16 +45,17 @@ export default function CategoryProductsPage() {
     }
   };
 
-  const fetchCategoryName = async () => {
-    try {
-      const response = await fetch(`/api/categories/${id}`);
-      if (!response.ok) throw new Error("Failed to fetch category name");
-      const data = await response.json();
-      setCategoryName(data.category.name);
-    } catch (err) {
-      console.error("Error fetching category name:", err);
-    }
-  };
+  // const fetchCategoryName = async () => {
+  //   try {
+  //     const response = await fetch(`/api/categories/${id}/products`);
+  //     if (!response.ok) throw new Error("Failed to fetch category name");
+  //     const data = await response.json();
+  //     console.log(data)
+  //     setCategoryName(data.category.name);
+  //   } catch (err) {
+  //     console.error("Error fetching category name:", err);
+  //   }
+  // };
 
   const handleDelete = async (productId: string) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;

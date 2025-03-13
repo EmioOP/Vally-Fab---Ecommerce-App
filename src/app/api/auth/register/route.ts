@@ -2,6 +2,7 @@ import User from "@/model/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs"
 import { connectDB } from "@/lib/db";
+import Cart from "@/model/cartModel";
 
 export async function POST(request: NextRequest) {
     try {
@@ -17,15 +18,22 @@ export async function POST(request: NextRequest) {
         })
 
         if(existedUser){
-            return NextResponse.json({error:"User with same email or username is already exists"})
+            return NextResponse.json({error:"User with same email or username is already exists"},{status:400})
         }
 
 
-         await User.create({
+        const user = await User.create({
             email,
             password,
             username
         })
+
+        if(!user){
+            return NextResponse.json({error:"unable to create user"},{status:500})
+            
+        }
+        const cart = await Cart.create({owner:user._id})
+
 
         return NextResponse.json({message:"User registered successfully"},{status:201})
 

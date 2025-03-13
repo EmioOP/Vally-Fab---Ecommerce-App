@@ -15,6 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
         const { id } = await params
 
+        console.log("id----", id)
 
         if (!isValidObjectId(id)) {
             return NextResponse.json({ error: "invalid category id" }, { status: 409 })
@@ -24,22 +25,34 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
         const category = await Category.findById(id)
 
-        console.log(category)
+        console.log(category._id)
 
         if (!category) {
             return NextResponse.json({ error: "category not found" }, { status: 404 })
 
         }
-        
 
-        const products = await Product.find({category:category._id}).lean()
 
-        if(!products ){
+        const products = await Product.find({ category: category._id }).populate(
+            {
+                path:"category",
+                select:"name _id"
+            }
+        ).lean()
+
+        if (!products) {
             return NextResponse.json({ error: "products not found" }, { status: 400 })
-            
+
         }
 
-        return NextResponse.json(products,{status:200})
+        console.log(products)
+
+        return NextResponse.json({
+            products, category: {
+                _id: category._id,
+                name: category.name
+            }
+        }, { status: 200 })
 
 
     } catch (error) {

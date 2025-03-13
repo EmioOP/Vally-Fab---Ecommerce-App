@@ -26,7 +26,7 @@ export default function ProductsAdminPage() {
     <div className="container mx-auto p-4 min-h-screen max-h-full mt-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-bold mb-4 text-left ml-2">All Products</h1>
-        <Link href="/admin/add-product" className="btn btn-primary">
+        <Link href="/admin/products/create" className="btn btn-primary">
           Create New
         </Link>
       </div>
@@ -36,7 +36,7 @@ export default function ProductsAdminPage() {
             key={product._id?.toString()}
             className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3 xl:w-1/4"
           >
-            <Link href={`/admin/products/${product._id}`}>
+            
               <div className="border p-4 rounded-lg shadow flex flex-col md:flex-row items-center">
                 {/* Image Section */}
                 <div className="w-full md:w-1/3 h-32 md:h-auto overflow-hidden">
@@ -59,7 +59,7 @@ export default function ProductsAdminPage() {
                     <strong>Price:</strong> ₹{product.price}
                   </p>
                   <p className="text-gray-800 mt-2 text-sm">
-                    <strong>Category:</strong> {product.category}
+                    <strong>Category:</strong> {product.category.toString()}
                   </p>
                   <p className="text-gray-800 mt-2 text-sm">
                     <strong>Size:</strong> {product.sizes}
@@ -71,7 +71,13 @@ export default function ProductsAdminPage() {
                   {/* Buttons */}
                   <div className="flex gap-2 mt-4">
                     <Link
-                      href={`/admin/update-product/${product._id}`}
+                      href={`/admin/products/${product._id}`}
+                      className="btn btn-soft btn-primary"
+                    >
+                      View
+                    </Link>
+                    <Link
+                      href={`/admin/products/update/${product._id}`}
                       className="btn btn-soft btn-secondary"
                     >
                       Update
@@ -104,7 +110,7 @@ export default function ProductsAdminPage() {
                   </div>
                 </div>
               </div>
-            </Link>
+            
           </li>
         ))}
       </ul>

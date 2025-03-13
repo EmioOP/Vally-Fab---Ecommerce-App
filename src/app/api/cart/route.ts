@@ -38,10 +38,3 @@ export async function GET(request:NextRequest){
     }
 }
 
-export async function PUT(){
-    try {
-        
-    } catch (error) {
-        
-    }
-}
